@@ -1,0 +1,367 @@
+----------CREARE TABELE-------
+
+--1.USER_SMR
+CREATE TABLE USER_SMR( 
+    user_id NUMBER(5) PRIMARY KEY, 
+    user_name VARCHAR(20) NOT NULL UNIQUE, 
+    user_mail VARCHAR(20) NOT NULL UNIQUE, --unique pt a avea aceeasi adresa de mail pt un singur user 
+    user_password VARCHAR(20) NOT NULL, 
+    user_PaypalAccount VARCHAR(20) , --null in caz ca e user pe abonament free
+    user_register_date  DATE DEFAULT (sysdate), 
+    user_subscription NUMBER(1)  --tip subscription(0- FREE , 1-BASIC , 2-PREMIUM)
+);
+
+--2.PLAYLIST
+CREATE TABLE PLAYLIST(
+    playlist_id NUMBER(5) PRIMARY KEY,
+    playlist_name VARCHAR(55) NOT NULL 
+);
+
+--3.CONTRIBUTES
+
+CREATE TABLE CONTRIBUTES( 
+    user_id NUMBER(5), 
+    playlist_id  NUMBER(5), 
+    nr_streams NUMBER(5), 
+    CONSTRAINT PK_Contributes PRIMARY KEY (user_id, playlist_id), 
+    CONSTRAINT FK_Contributes_Utilizator FOREIGN KEY (user_id) REFERENCES User_SMR(user_id), 
+    CONSTRAINT FK_Contributes_Playlist FOREIGN KEY (playlist_id) REFERENCES Playlist(playlist_id) 
+);
+
+--4.ARTIST
+
+CREATE TABLE ARTIST( 
+    artist_id NUMBER(5) PRIMARY KEY, 
+    stage_name VARCHAR(20) NOT NULL, 
+    artist_last_name VARCHAR(20), --null pt trupa
+    artist_first_name VARCHAR(20),  
+    nationality VARCHAR(20) ,
+    prod_id NUMBER(5) REFERENCES production_company(prod_id) ON DELETE SET NULL 
+); 
+
+--5.SONG
+
+CREATE TABLE SONG( 
+    song_id NUMBER(5) PRIMARY KEY, 
+    song_name VARCHAR(20) NOT NULL, 
+    release_date DATE, 
+    song_duration NUMBER(5) -- durata exprimata in secunde 
+);
+
+--6.CONTAINS
+
+ CREATE TABLE CONTAINS( 
+    song_id NUMBER(5), 
+    playlist_id  NUMBER(5), 
+    CONSTRAINT PK_Contains PRIMARY KEY (song_id, playlist_id), 
+    CONSTRAINT FK_Contains_Song FOREIGN KEY (song_id) REFERENCES Song(song_id), 
+    CONSTRAINT FK_Contains_Playlist FOREIGN KEY (playlist_id) REFERENCES Playlist(playlist_id) 
+);
+
+--7.ALBUM
+
+CREATE TABLE ALBUM(
+     album_id NUMBER(5) PRIMARY KEY, 
+     album_name VARCHAR(20) NOT NULL
+);
+
+
+--8.HAS
+
+CREATE TABLE HAS( 
+    song_id NUMBER(5), 
+    album_id  NUMBER(5), 
+    CONSTRAINT PK_Has PRIMARY KEY (song_id, album_id), 
+    CONSTRAINT FK_Has_Song FOREIGN KEY (song_id) REFERENCES Song(song_id), 
+    CONSTRAINT FK_Has_Album FOREIGN KEY (album_id) REFERENCES Album(album_id) 
+);
+
+--9.SUNG_BY
+
+CREATE TABLE SUNG_BY( 
+    song_id NUMBER(5), 
+    artist_id  NUMBER(5), 
+    CONSTRAINT PK_Sung_By PRIMARY KEY (song_id, artist_id), 
+    CONSTRAINT FK_Sung_By_Song FOREIGN KEY (song_id) REFERENCES Song(song_id), 
+    CONSTRAINT FK_Sung_By_Artist FOREIGN KEY (artist_id) REFERENCES Artist(artist_id) 
+);
+
+--10.GENRE
+
+CREATE TABLE GENRE( 
+    genre_id NUMBER(5) PRIMARY KEY, 
+    genre_name VARCHAR(20) NOT NULL 
+);
+
+--11.BELONGS_TO 
+
+CREATE TABLE BELONGS_TO( 
+    song_id NUMBER(5), 
+    genre_id  NUMBER(5), 
+    CONSTRAINT PK_Belongs_To PRIMARY KEY (song_id, genre_id), 
+    CONSTRAINT FK_Belongs_To_Song FOREIGN KEY (song_id) REFERENCES Song(song_id), 
+    CONSTRAINT FK_Belongs_To_Genre FOREIGN KEY (genre_id) REFERENCES Genre(genre_id) 
+);
+
+--12.PRODUCTION_COMPANY 
+
+CREATE TABLE PRODUCTION_COMPANY( 
+    prod_id NUMBER(5) PRIMARY KEY, 
+    company_name VARCHAR(20) NOT NULL,
+    company_mail VARCHAR(20) NOT NULL,
+    company_phone VARCHAR(20) NOT NULL
+);
+
+--------INSERARE DATE IN TABELE-------
+
+
+
+--1.USER_SMR
+
+INSERT INTO USER_SMR (USER_ID, USER_NAME,USER_MAIL , USER_PASSWORD, user_paypalaccount, user_register_date,user_subscription)  
+VALUES (10, 'stanescuraluca','marie02st@gmail.com','parola123','stral@paypal.com', to_date('2019/12/10', 'RRRR-MM-DD'), 2);
+
+
+INSERT INTO USER_SMR (USER_ID, USER_NAME,USER_MAIL , USER_PASSWORD, user_paypalaccount, user_register_date,user_subscription)  
+VALUES (11, 'popescuion','popescuion@gmail.com','parola1234','popion@paypal.com', to_date('2020/06/10', 'RRRR-MM-DD'), 0);
+
+
+INSERT INTO USER_SMR (USER_ID, USER_NAME,USER_MAIL , USER_PASSWORD, user_paypalaccount, user_register_date,user_subscription)  
+VALUES (101, 'marinandrei','marinand@gmail.com','pass1234','marinand@paypal.com', to_date('2021/06/11', 'RRRR-MM-DD'), 1);
+
+INSERT INTO USER_SMR (USER_ID, USER_NAME,USER_MAIL , USER_PASSWORD, user_paypalaccount, user_register_date,user_subscription)  
+VALUES (15, 'tomisanda','tomand@aol.com','pass@12','tomand@paypal.com', to_date('2018/11/07', 'RRRR-MM-DD'), 0);
+
+INSERT INTO USER_SMR (USER_ID, USER_NAME,USER_MAIL , USER_PASSWORD, user_paypalaccount, user_register_date,user_subscription)  
+VALUES (20, 'rusupaul','rusup@gmail.com','pass@112','rusup@paypal.com', to_date('2021/01/09', 'RRRR-MM-DD'), 2);
+
+INSERT INTO USER_SMR (USER_ID, USER_NAME,USER_MAIL , USER_PASSWORD, user_paypalaccount, user_register_date,user_subscription)  
+VALUES (21, 'rosualex','rosual@gmail.com','parola125','rosual@paypal.com', to_date('2020/01/09', 'RRRR-MM-DD'), 1);
+
+INSERT INTO USER_SMR (USER_ID, USER_NAME,USER_MAIL , USER_PASSWORD, user_paypalaccount, user_register_date,user_subscription)  
+VALUES (25, 'predadan','prdan@gmail.com','parola@129','prdan@paypal.com', to_date('2019/02/05', 'RRRR-MM-DD'), 0);
+
+INSERT INTO USER_SMR (USER_ID, USER_NAME,USER_MAIL , USER_PASSWORD, user_paypalaccount, user_register_date,user_subscription)  
+VALUES (27, 'alexedan','aldan@gmail.com','parola@157','aldan@paypal.com', to_date('2016/03/07', 'RRRR-MM-DD'), 1);
+
+INSERT INTO USER_SMR (USER_ID, USER_NAME,USER_MAIL , USER_PASSWORD, user_paypalaccount, user_register_date,user_subscription)  
+VALUES (29, 'vladalex','vlalex@gmail.com','parola@147','vlalex@paypal.com', to_date('2017/02/10', 'RRRR-MM-DD'), 2);
+
+INSERT INTO USER_SMR (USER_ID, USER_NAME,USER_MAIL , USER_PASSWORD, user_paypalaccount, user_register_date,user_subscription)  
+VALUES (35, 'mariusandrei','mandrei@gmail.com','parola@150','mand@paypal.com', to_date('2019/05/11', 'RRRR-MM-DD'), 0);
+
+--2. PLAYLIST 
+
+INSERT INTO PLAYLIST (playlist_id, playlist_name)  
+VALUES (200, 'Happysongs');
+INSERT INTO PLAYLIST (playlist_id, playlist_name)  
+VALUES (201, 'Sadsongs');
+INSERT INTO PLAYLIST (playlist_id, playlist_name)  
+VALUES (202, 'Rocksongs');
+INSERT INTO PLAYLIST (playlist_id, playlist_name)  
+VALUES (203, '70sHits');
+INSERT INTO PLAYLIST (playlist_id, playlist_name)  
+VALUES (204, '80sHits');
+INSERT INTO PLAYLIST (playlist_id, playlist_name)  
+VALUES (205, 'Top10Today');
+INSERT INTO PLAYLIST (playlist_id, playlist_name)  
+VALUES (206, '00sHits');
+INSERT INTO PLAYLIST (playlist_id, playlist_name)  
+VALUES (207, ' AlternativeFavs');
+INSERT INTO PLAYLIST (playlist_id, playlist_name)  
+VALUES (208, ' AllTimeFavs');
+INSERT INTO PLAYLIST (playlist_id, playlist_name)  
+VALUES (209, 'Bestof');
+
+--3. ALBUM 
+
+INSERT INTO ALBUM (album_id, album_name)  
+VALUES (300, 'Is This It');
+INSERT INTO ALBUM (album_id, album_name)  
+VALUES (301, 'Vladivostok');
+INSERT INTO ALBUM (album_id, album_name)  
+VALUES (302, 'The Wall');
+
+INSERT INTO ALBUM (album_id, album_name)  
+VALUES (303, 'Hot Space');
+INSERT INTO ALBUM (album_id, album_name)  
+VALUES (304, 'The Works');
+INSERT INTO ALBUM (album_id, album_name)  
+VALUES (305, 'Back In Black');
+INSERT INTO ALBUM (album_id, album_name)  
+VALUES (306, 'AM');
+INSERT INTO ALBUM (album_id, album_name)  
+VALUES (307, 'The New Abnormal');
+INSERT INTO ALBUM (album_id, album_name)  
+VALUES (308, 'From Eden');
+INSERT INTO ALBUM (album_id, album_name)  
+VALUES (309, 'Pastel Blues');
+
+--4. SONG 
+
+INSERT INTO SONG (song_id, song_name,release_date,song_duration)  
+VALUES (400, 'Mad Sounds',to_date('2013/09/06', 'RRRR-MM-DD'), 210);
+INSERT INTO SONG (song_id, song_name,release_date,song_duration)  
+VALUES (401, 'Someday',to_date('2001/07/02', 'RRRR-MM-DD'), 184);
+INSERT INTO SONG (song_id, song_name,release_date,song_duration)  
+VALUES (402, 'Noi toti',to_date('2019/10/01', 'RRRR-MM-DD'), 206);
+INSERT INTO SONG (song_id, song_name,release_date,song_duration)  
+VALUES (403, 'Back in Black',to_date('1980/10/15', 'RRRR-MM-DD'), 256);
+INSERT INTO SONG (song_id, song_name,release_date,song_duration)  
+VALUES (404, 'Comfortably Numb',to_date('1979/04/06', 'RRRR-MM-DD'), 376);
+INSERT INTO SONG (song_id, song_name,release_date,song_duration)  
+VALUES (405, 'Cool Cat',to_date('1982/05/21', 'RRRR-MM-DD'), 210);
+INSERT INTO SONG (song_id, song_name,release_date,song_duration)  
+VALUES (406, 'Hammer To Fall',to_date('1984/04/19', 'RRRR-MM-DD'), 266);
+INSERT INTO SONG (song_id, song_name,release_date,song_duration)  
+VALUES (407, 'Bad Decisions',to_date('2020/06/06', 'RRRR-MM-DD'), 300);
+INSERT INTO SONG (song_id, song_name,release_date,song_duration)  
+VALUES (408, 'Work Song',to_date('2014/02/09', 'RRRR-MM-DD'), 229);
+INSERT INTO SONG (song_id, song_name,release_date,song_duration)  
+VALUES (409, 'Sinnerman',to_date('1965/03/16', 'RRRR-MM-DD'), 622);
+
+--5. GENRE
+INSERT INTO GENRE(genre_id, genre_name)  
+VALUES (500, 'Rock');
+INSERT INTO GENRE(genre_id, genre_name)  
+VALUES (501, 'Pop');
+INSERT INTO GENRE(genre_id, genre_name)  
+VALUES (502, 'Alternative');
+INSERT INTO GENRE(genre_id, genre_name)  
+VALUES (503, 'Indie');
+INSERT INTO GENRE(genre_id, genre_name)  
+VALUES (504, 'Jazz');
+INSERT INTO GENRE(genre_id, genre_name)  
+VALUES (505, 'Blues');
+INSERT INTO GENRE(genre_id, genre_name)  
+VALUES (506, 'Folk');
+INSERT INTO GENRE(genre_id, genre_name)  
+VALUES (507, 'Dance');
+INSERT INTO GENRE(genre_id, genre_name)  
+VALUES (508, 'Heavy Metal');
+INSERT INTO GENRE(genre_id, genre_name)  
+VALUES (509, 'Soul');
+
+
+--6.PRODUCTION_COMPANY 
+
+INSERT INTO PRODUCTION_COMPANY(prod_id, company_name,company_mail,company_phone)  
+VALUES (600, 'Sony','sony@gmail.com','0798467224');
+INSERT INTO PRODUCTION_COMPANY(prod_id, company_name,company_mail,company_phone)  
+VALUES (601, 'Warner','warner@gmail.com','0776469824');
+INSERT INTO PRODUCTION_COMPANY(prod_id, company_name,company_mail,company_phone)  
+VALUES (602, 'Universal','universal@gmail.com','0798233224');
+INSERT INTO PRODUCTION_COMPANY(prod_id, company_name,company_mail,company_phone)  
+VALUES (603, 'Lion','lion@gmail.com','0709123664');
+INSERT INTO PRODUCTION_COMPANY(prod_id, company_name,company_mail,company_phone)  
+VALUES (604, 'SM Entertainment','sm@gmail.com','0798237214');
+INSERT INTO PRODUCTION_COMPANY(prod_id, company_name,company_mail,company_phone)  
+VALUES (605, 'TM Production','tm@gmail.com','0797627264');
+INSERT INTO PRODUCTION_COMPANY(prod_id, company_name,company_mail,company_phone)  
+VALUES (606, 'Tips Industries','tips@gmail.com','0798467337');
+INSERT INTO PRODUCTION_COMPANY(prod_id, company_name,company_mail,company_phone)  
+VALUES (607, 'Creative Impulse','creative@gmail.com','0745465524');
+INSERT INTO PRODUCTION_COMPANY(prod_id, company_name,company_mail,company_phone)  
+VALUES (608, 'Cash Money','cashm@gmail.com','0799467325');
+INSERT INTO PRODUCTION_COMPANY(prod_id, company_name,company_mail,company_phone)  
+VALUES (609, 'Lang Van','langvan@gmail.com','0799437904');
+
+
+--7. ARTIST 
+
+INSERT INTO ARTIST(artist_id, stage_name,artist_last_name,artist_first_name,nationality,prod_id)  
+VALUES (800, 'Nina Simone','Waymon','Eunice Kathleen','American',600);
+INSERT INTO ARTIST(artist_id, stage_name,artist_last_name,artist_first_name,nationality,prod_id)  
+VALUES (801, 'AC/DC',null,null,'Australian',601);
+INSERT INTO ARTIST(artist_id, stage_name,artist_last_name,artist_first_name,nationality,prod_id)  
+VALUES (802, 'Arctic Monkeys',null,null,'British',602);
+INSERT INTO ARTIST(artist_id, stage_name,artist_last_name,artist_first_name,nationality,prod_id)  
+VALUES (803, 'Queen',null,null,'British',603);
+INSERT INTO ARTIST(artist_id, stage_name,artist_last_name,artist_first_name,nationality,prod_id)  
+VALUES (804, 'Pink Floyd',null,null,'British',604);
+INSERT INTO ARTIST(artist_id, stage_name,artist_last_name,artist_first_name,nationality,prod_id)  
+VALUES (805, 'Hozier',null,null,'Irish',605);
+INSERT INTO ARTIST(artist_id, stage_name,artist_last_name,artist_first_name,nationality,prod_id)  
+VALUES (806, 'RATB',null,null,'Romanian',606);
+INSERT INTO ARTIST(artist_id, stage_name,artist_last_name,artist_first_name,nationality,prod_id)  
+VALUES (807, 'The Strokes',null,null,'British',607);
+INSERT INTO ARTIST(artist_id, stage_name,artist_last_name,artist_first_name,nationality,prod_id)  
+VALUES (808, 'Glass Animals',null,null,'British',608);
+INSERT INTO ARTIST(artist_id, stage_name,artist_last_name,artist_first_name,nationality,prod_id)  
+VALUES (809, 'Modest Mouse',null,null,'American',609);
+INSERT INTO ARTIST(artist_id, stage_name,artist_last_name,artist_first_name,nationality,prod_id)  
+VALUES (810, 'Lou Reed','Reed','Lewis','American',600);
+
+--8. Contributes
+insert into contributes values(10,200,100);
+insert into contributes values(11,201,200);
+insert into contributes values(101,202,300);
+insert into contributes values(15,203,50);
+insert into contributes values(20,204,100);
+insert into contributes values(21,205,500);
+insert into contributes values(25,206,101);
+insert into contributes values(27,207,102);
+insert into contributes values(29,208,110);
+insert into contributes values(35,209,1000);
+
+--9. Contains
+insert into contains values(406,200);
+insert into contains values(400,201);
+insert into contains values(403,202);
+insert into contains values(404,203);
+insert into contains values(405,204);
+insert into contains values(408,205);
+insert into contains values(401,206);
+insert into contains values(407,207);
+insert into contains values(402,208);
+insert into contains values(409,209);
+
+--10. HAS
+
+insert into has values(401,300);
+insert into has values(402,301);
+insert into has values(404,302);
+insert into has values(405,303);
+insert into has values(406,304);
+insert into has values(403,305);
+insert into has values(400,306);
+insert into has values(407,307);
+insert into has values(408,308);
+insert into has values(409,309);
+
+--11. Sung by
+
+insert into sung_by values(400,802);
+insert into sung_by values(401,807);
+insert into sung_by values(407,807);
+insert into sung_by values(402,806);
+insert into sung_by values(403,801);
+insert into sung_by values(404,804);
+insert into sung_by values(405,803);
+insert into sung_by values(406,803);
+insert into sung_by values(408,805);
+insert into sung_by values(409,800);
+
+--12.BELONGS_TO
+
+insert into belongs_to values(400,502);
+insert into belongs_to values(401,503);
+insert into belongs_to values(402,502);
+insert into belongs_to values(403,500);
+insert into belongs_to values(403,508);
+insert into belongs_to values(404,500);
+insert into belongs_to values(405,504);
+insert into belongs_to values(405,507);
+insert into belongs_to values(405,500);
+insert into belongs_to values(406,500);
+insert into belongs_to values(407,502);
+insert into belongs_to values(408,509);
+insert into belongs_to values(409,504);
+insert into belongs_to values(409,509);
+insert into belongs_to values(409,505);
+
+
+
+
+
+

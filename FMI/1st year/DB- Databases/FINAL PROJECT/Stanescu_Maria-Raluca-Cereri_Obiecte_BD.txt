@@ -1,0 +1,219 @@
+------REZOLVARE CERINTE----
+
+--11.
+
+--JOIN PE >4 TABELE SI ORDONARI--
+
+--1.Sa se afiseze artistul, casa de productie, melodiile si genul acestora, sortate descrescator dupa data lansarii melodiei
+
+SELECT  a.stage_name, p.company_name,s.song_name, s.release_date,g.genre_name
+from artist a 
+join production_company p on a.prod_id = p.prod_id
+join sung_by su on a.artist_id = su.artist_id
+join song s on su.song_id = s.song_id
+join belongs_to b on s.song_id = b.song_id
+join genre g on b.genre_id = g.genre_id
+order by 4 desc;
+
+--CASE--
+
+--2.Sa se afiseze pt fiecare playlist 'ASCULTAT DES' daca are number of streams
+--peste 500, 'ASCULTAT MEDIU' pt 100<nr of streams<500 si 
+--'ASCULTAT PUTIN' in rest.
+
+SELECT CASE WHEN c.nr_streams < 100 THEN 'ASCULTAT PUTIN'
+            WHEN c.nr_streams <500 THEN 'ASCULTAT MEDIU'
+            ELSE 'ASCULTAT DES'
+            END as nr_ascultari, c.playlist_id,p.playlist_name
+FROM contributes c
+JOIN playlist p on c.playlist_id = p.playlist_id;
+
+
+
+
+--DECODE--
+
+--3.Sa se afiseze pentru fiecare playlist emotia pe care sunt bazate numele, daca exista.In caz contrar se va afisa 'no emotion detected'.
+
+SELECT DECODE(playlist_name,'Happysongs','Happy','Sadsongs','Sad','no emotion detected')
+FROM playlist
+
+--NVL--
+
+--4.Sa se afiseze mesajul 'band' in cazul in care artistul este trupa, in caz contrar sa se afiseze prenumle artistului.
+SELECT NVL(artist_first_name,'band')
+from artist;
+
+--NVL2--
+
+--5.Sa se afiseze mesajul 'solo' in cazul in care artistul este solo, in caz contrar sa se afiseze mesajul 'band'.
+
+SELECT NVL2(artist_first_name,'solo','band')
+from artist;
+
+--FUNCTII PE SIRURI DE CARACTERE--
+
+--6.Sa se afiseze informatii despre melodiile ale carui gen muzical este rock.
+
+select *
+from song s
+join belongs_to b on s.song_id = b.song_id
+join genre g on b.genre_id = g.genre_id
+where lower(genre_name) = 'rock'
+
+--FUNCTII PE SIRURI DE CARACTERE--+FILTRARE LA NIVEL DE LINII
+
+--7.Sa se afiseze playlisturile care contin melodii jazz si melodiile corespunzatoare.
+
+select *
+from playlist p
+join contains h on p.playlist_id = h.playlist_id
+join song s on h.song_id = s.song_id
+join belongs_to b on s.song_id=b.song_id
+join genre g on b.genre_id = g.genre_id
+where upper(genre_name) = 'JAZZ'
+
+--FUNCTII PE DATE CALENDARISTICE--
+
+--8.Sa se afiseze data primei zile de luni dupa datele de lansare din 2020
+
+
+SELECT NEXT_DAY(s.release_date, 'Monday')
+from song s
+where extract (year from s.release_date) =2020;
+
+--9.Sa se afiseze ultima zi calendaristica a lunilor in care a fost lansat un cantec din 1979
+
+SELECT LAST_DAY(s.release_date)
+from song s
+where extract (year from s.release_date) =1979;
+
+--WITH --
+
+--10.Sa se afiseze informatii despre melodiile care au fost lansate in acelasi an in care s a inregistrat un user.
+
+WITH inregistrari AS (SELECT DISTINCT TO_CHAR(user_register_date,'YYYY') AS data1
+FROM User_SMR)
+SELECT s.song_name,s.release_date
+FROM inregistrari i, song s
+WHERE TO_CHAR(s.release_date,'YYYY') IN i.data1;
+
+--grupări de date, funcții grup, filtrare la nivel de grupuri--
+
+--Sa se afiseze toate id-urile artistilor care au cel putin 2 melodii si nr melodiilor
+
+select artist_id, count(song_id)
+from sung_by
+group by artist_id
+having count(song_id)>=2;
+
+
+--Afisati numele artistilor care au prima litera a numelui de scena egala
+--cu cea a usernameului utilizatorilor care au contribuit la un playlist 
+--cu id ul mai mic de 205.
+
+
+select a1.stage_name
+from artist a1 
+where cast(upper(a1.stage_name) as char(1)) in (
+select cast(upper(u.user_name) as char(1))
+from user_smr u
+join contributes c on u.user_id=c.user_id
+join playlist p on c.playlist_id=p.playlist_id
+join contains co on p.playlist_id = co.playlist_id
+join song s on co.song_id=s.song_id
+join sung_by sb on s.song_id = sb.song_id
+join artist a2 on sb.artist_id = a2.artist_id
+where p.playlist_id < 205);
+
+--SUBCERERE CORELATA
+--albumele care au un cantec de durata mai mca de 500 de secunde cantat de un artist cu lungimea numelui mai mica decat 7 caractere.
+SELECT a.album_name
+FROM album a
+JOIN has h ON (a.album_id=h.album_id)
+JOIN song s ON (h.song_id=s.song_id)
+WHERE s.song_duration < 500
+AND s.song_id IN(SELECT s1.song_id
+                FROM song s1
+                JOIN sung_by sb ON (s1.song_id=sb.song_id)
+                JOIN artist a1 ON (sb.artist_id=a1.artist_id)
+                WHERE s1.song_duration=s.song_duration
+                AND length(a1.stage_name) < 7  );
+
+
+--SUBCERERI NECORELATE—
+
+--Sa se afiseze username ul utilzatorilor al caror username are aceeasi lungime cu cea a numelui de scena al unui artist care a lansat o melodie dupa 1980.
+
+SELECT U.USER_NAME 
+from user_smr u
+where length(u.user_name) in 
+(select length(a.stage_name) 
+from artist a
+join sung_by s on s.artist_id = a.artist_id
+join song so on s.song_id = so.song_id
+where to_char(so.release_date,'YYYY')>1980);
+
+--12--
+
+--Implementarea a 3 operații de actualizare sau suprimare a datelor utilizând subcereri.
+ 
+-- 12.1. -- UPDATE Fiecare utilizator reasculta playlistul pe care l-a ascultat cel mai des. 
+
+UPDATE Contributes  c 
+SET nr_streams = nr_streams + 1 
+WHERE playlist_id IN (SELECT playlist_id 
+                    FROM Contributes c1 
+                    WHERE c.user_id = c1. user_id and  
+                    nr_streams = (SELECT max(nr_streams) 
+                                FROM Contributes c2 
+                             WHERE c1.user_id = c2.user_id));
+
+--12.2--Sa se schimbe paypalul userilor care au lungimea contului de paypal mai mare decat cea mai lunga parola din tabel.
+
+update user_smr
+set user_PaypalAccount = user_name
+where length(user_PaypalAccount) > 
+(SELECT max(length(user_password)) 
+from User_SMR);
+
+select *
+from user_SMR;
+
+rollback;
+
+--12.3--Sa se schimbe parola userilor care este mai scurta decat lungimea maixma a unui user_name din tabel in user_name-ul asociat. 
+
+update user_smr
+set user_password = user_name
+where length(user_password) < 
+(SELECT max(length(user_name)) 
+from User_SMR);
+
+select *
+from user_SMR;
+
+--rollback;
+
+--13
+
+create sequence r_seq
+start with 35
+increment by 1
+minvalue 1
+nocycle
+nocache;
+
+insert into User_SMR values(r_seq.nextval,'alexdana','aldana@gmail.com','parola@1500','aldana@paypal.com', to_date('2015/06/07', 'RRRR-MM-DD'), 1); 
+
+--16.Sa se afiseze artistii si toate genurile din care fac parte.In cazul genurilor care nu includ niciun artist se va afisa mesajul "Nobody".
+
+SELECT nvl(a.stage_name,'Nobody'), g.genre_name
+from artist a, genre g , sung_by sb , song s , belongs_to b
+where
+a.artist_id (+) = sb.artist_id and
+sb.song_id (+) = s.song_id and
+s.song_id (+) = b.song_id and
+b.genre_id (+) = g.genre_id
+order by 2;
+

@@ -1,0 +1,51 @@
+.data
+
+str: .asciiz "Sir strict crescator"
+.text
+
+main:
+li $v0, 5
+        syscall
+        move $t0, $v0  #n retinut in t0
+       
+        li $t1, 1      #contor de la 1 in t1
+        li $t3, 0      #contor pt numere strict cresc.
+
+
+        li $v0,5  #citim a1
+        syscall
+        move $t2,$v0 #a1 retinut in t2
+       
+        loop:
+             bge $t1,$t0,exit  #exit pt ct>=n
+           
+
+             li $v0,5
+             syscall
+             move $t4,$v0     #ai retinut in t4
+   
+             blt $t2,$t4,etcrescator
+             bge $t2,$t4,etdescrescator
+             
+             
+        etdescrescator:
+                       addi $t1,$t1,1  #ct++
+                       li $v0,1
+                       move $a0,$t1
+                       syscall
+                       j etexit
+        etcrescator:
+                    addi $t3,$t3,1
+                    addi $t1,$t1,1  #ct++
+                    move $t2,$t4    #pt a retine termenul precedent
+                    j loop
+        etexit:
+                li $v0, 10
+       syscall
+        exit:
+               la $a0,str
+               li $v0,4
+               syscall
+
+      li $v0, 10
+      syscall

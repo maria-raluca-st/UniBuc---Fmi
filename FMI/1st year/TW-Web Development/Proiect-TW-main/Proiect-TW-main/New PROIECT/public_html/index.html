@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Stanescu Raluca">
+    <meta name="description" content="Wishlist app">
+
+    <title>UltimateWishlist</title>
+    <link rel="icon" href="img/w-ico.ico" type="image/x-icon"/>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&family=Lobster&family=Open+Sans&family=Pacifico&family=Raleway&family=Roboto+Slab&display=swap" rel="stylesheet"> 
+    <script src="https://kit.fontawesome.com/8f2dcd945c.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="modalSettings" class="modal-box">
+        <div class="modal-settings">
+            <h1 class="modal-title">Settings</h1>
+            <p>
+                Enter your name: 
+                <input id="user-name" type="textbox">
+            </p>
+            <div class="modal-menu">
+                <button type="submit" class="btn" onclick="saveSettings()">Save</button>
+                <button type="submit" class="btn" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalView" class="modal-box">
+        <div id="modalView-info" class="modal-view">
+
+        </div>
+    </div>
+
+    <div id="modalAdd" class="modal-box">
+        <div class="modal-add">
+            <h1 class="modal-title">Add Item</h1>
+            <form class="add-form">
+                <label for="gift-title">Item Name:</label><br>
+                <input name="b-title" id="modal-b-title" type="text" placeholder="e.g. Scuba"><br>
+                <label for="gift-description">Description</label><br>
+                <textarea name="b-descript" id="modal-b-descript" placeholder="e.g. Scuba in Bora Bora"></textarea><br>
+                <div class="modal-menu">
+                    <button type="button" id="postMBtn" class="btn" onclick="postMGift()" disabled>Add</button>
+                    <button type="button" class="btn" onclick="closeModal()">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <nav>
+        <h1 class="nav-title">UltimateWishlist</h1>
+        <div class="nav-wrapper">
+            <button onclick="openHome()" class="nav-home"><i class="fas fa-home ico"></i></button>
+            <button onclick="openModalAdd()" class="nav-add"><i class="fas fa-plus ico"></i></button>
+            <button onclick="openInfo()" class="nav-info"><i class="fas fa-info ico"></i></button>
+            <button onclick="openSettings()" class="nav-settings"><i class="fas fa-cog ico"></i></button>
+           
+
+        </div>
+    </nav>
+    
+    <div class="body-layout">
+        <main class="main-list">
+            <header class="greeting-container">
+                <h2 id="greeting">Glad to see you!</h2>
+            </header>
+            
+            <ul id="gift-list"></ul>
+        </main>
+
+        <aside class="add-list">
+            <form class="add-form">
+                <h1>Add Item</h1>
+                <label for="gift-title">Item Name</label><br>
+                <input name="b-title" id="b-title" type="text" placeholder="e.g. Scuba"><br>
+                <label for="gift-description">Description</label><br>
+                <textarea name="b-descript" id="b-descript" placeholder="e.g. Private scuba session in Bora Bora "></textarea><br>
+                <button type="button" id="postBtn" class="btn" onclick="postGift()" disabled>Add</button>
+            </form>
+        </aside>
+    </div>
+
+    <footer>
+        <p><i class="fas fa-infinity"></i> Designed for endless possibilities <i class="fas fa-infinity"></i></p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

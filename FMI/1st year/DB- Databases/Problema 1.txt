@@ -1,0 +1,16 @@
+Afisati informatii complete (toate coloanele din tabela employees) despre angajatii care lucreaza pe job-ul pe care lucreaza cei mai multi angajati.
+
+
+
+
+select e1.employee_id as id_angajat_smr, e1.first_name as prenume_smr, e1.last_name as nume_smr,e1.email as mail_smr,e1.phone_number as nrtelefon_smr,e1.hire_date as dataangajare_smr,e1.job_id as job_id_smr,e1.salary as salariu_smr, e1.commission_pct as comision_smr,e1.manager_id as idmanager_smr,e1.department_id as iddepartament_smr
+from employees e1
+WHERE (job_id) IN 
+(SELECT job_id
+FROM (SELECT j.job_id,COUNT(e.employee_id) NR_ANGAJATI
+FROM jobs j
+INNER JOIN employees e ON j.job_id = e.job_id
+GROUP BY j.job_id, j.job_title
+ORDER BY NR_ANGAJATI DESC)
+WHERE ROWNUM=1)
+ --30 rezultate
