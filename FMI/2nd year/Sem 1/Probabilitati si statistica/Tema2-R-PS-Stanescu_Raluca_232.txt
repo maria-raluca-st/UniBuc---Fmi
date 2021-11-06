@@ -1,0 +1,62 @@
+#Problema 1
+
+v <- c(106, 123, 123, 111, 125, 113, 130, 113, 114 , 100, 120, 130, 118, 114,127, 112, 121, 114, 120, 119, 127, 114, 108, 127, 131, 157, 102, 133)
+mini <- v[1]
+maxi <- v[1]
+
+for (i in 1:length(v))
+{ 
+  
+  if(v[i]>=120)
+  {
+    print(i)
+  }
+  if(v[i] < mini)
+  { mini = v[i]
+    pozmin = i
+  }
+  if(v[i] > maxi)
+  { maxi = v[i] 
+    pozmax = i }
+}
+
+print(pozmin)
+print(pozmax)
+
+#2
+#2.b
+sapply(split(mtcars$wt, mtcars$cyl), mean)
+#2.a
+sapply(split(mtcars$wt, mtcars$am), mean)
+#2.c
+sapply(split(mtcars$wt ,mtcars$cyl , mtcars$am), mean)
+
+
+
+
+
+#3
+
+x <- 1:10; # 10 columns
+y <- 1:10; # 10 rows
+
+m <- outer (
+  y,     # First dimension:  the columns (y)
+  x,     # Second dimension: the rows    (x)
+  function (x, y)   x/(y*y)
+);
+
+print(m);
+
+x <- 1:10; # 10 columns
+y <- 1:10; # 10 rows
+
+m <- outer (
+  y,     # First dimension:  the columns (y)
+  x,     # Second dimension: the rows    (x)
+  function (x, y)   1/sqrt(abs(x-y)+1)
+);
+
+print(m);
+
+
