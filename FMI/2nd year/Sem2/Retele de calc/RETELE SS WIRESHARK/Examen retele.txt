@@ -1,0 +1,55 @@
+Ex 1
+
+a) Pentru toate caracterele consideram codul ASCII/ Latin1.
+   Pentru caracterele a caror reprezentare binara nu are 8 caractere, facem padding cu leading 0s.
+   Pentru toate caracterele reprezentarea numerica este:
+   'A' - 'Z' -> 65-90
+   'a' - 'z' -> 97-122
+   '0' - '9' -> 48-57
+   ' '(spatiul) -> 32
+   '-' -> 45
+   'ă' -> chr(196,259)
+
+    Astfel , sirul de octeti(folosind big endian) pentru string "Stănescu Maria-Raluca" este : 
+    {01010011,01110100,11000100,10000011,01101110,01100101,01110011,01100011,01110101,00100000,01001101,01100001,01110010,01101001,01100001,00101101,01010010,01100001,01101100,01110101,01100011,01100001}
+
+b) Pentru checksum , concatenam cate 2 caractere cu 8 biti pentru a obtine bucatile de 16 biti pe care le adunam.Pentru ca sirul are 22 de elemente, obtinem 11 elemente de adunat.
+   Suma este :
+   0101001101110100+
+   1100010010000011+
+   0110111001100101+
+   0111001101100011+
+   0111010100100000+
+   0100110101100001+
+   0111001001101001+
+   0110000100101101+
+   0101001001100001+
+   0110110001110101+
+   0110001101100001
+  --------------------
+   1011001000001101+
+                100
+  --------------------
+   1011001000010001
+   
+   Pentru suma trebuie calculat complementul cu 1.
+   Astfel obtinem CheckSum : 0100110111101110
+ 
+Ex 2
+  
+  SYN: 
+  IP 192.168.0.1:443 > 158.101.186.24:39898 : Flags [S], seq 2416720451, length 0
+
+  SYN-ACK:
+  IP 158.101.186.24:39898 > 192.168.0.1:443 : Flags [S.], seq 415733812, ack 2416720452, length 0
+   
+  ACK:
+  IP 192.168.0.1:443 > 158.101.186.24:39898 : Flags [.], seq 415733813, length 0
+ 
+  PSH:
+  IP 192.168.0.1:443 > 158.101.186.24:39898 : Flags [P.], seq 2416720452:2416720453,ack 415733813, length 1
+
+  ACK:
+  IP 158.101.186.24:39898 > 192.168.0.1:443 : Flags [.], ack 2416720453, length 0
+    
+    

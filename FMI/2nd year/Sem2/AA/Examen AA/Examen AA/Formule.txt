@@ -1,0 +1,10 @@
+Triangulare
+
+nr triunghiuri = 2n-k-2
+nr muchii = 3n-k-3
+nr fete = nr triunghiuri +1
+
+Harte trapezoidale
+
+6n+4 varfuri maxim
+3n+1 trapeze maxim

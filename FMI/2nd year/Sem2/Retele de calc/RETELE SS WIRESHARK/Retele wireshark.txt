@@ -1,0 +1,19 @@
+ex UDP
+
+1.Packet number 5.
+Mesaj de protocol: NOTIFY * HTTP/1.1\r\n
+Exista 4 campuri in headerul UDP : Source Port , Destination Port , Length , Checksum.
+
+2.Fiecare camp de antet are lungimea de 2 bytes.
+
+3.Length(283) este suma celor 8 bytes din header si remaining data incapsulata in pachet.
+
+4.Numarul  maxim de octeti care pot fi inclusi intr-un payload UDP :
+2^16- 1 - 8 (bytes din header) = 65527
+
+5.Cel mai mare numar de port posibil : 2^16 - 1 = 65535
+
+6.Numarul de protocol pentru UDP : 17 in decimal , 0x11 in hex.
+
+7.Numerele de pachet sunt : 15 , 17.
+Relatia dintre porturi : Portul sursa al pachetului UDP trimis de host este portul destinatie al pachetului de reply , iar portul destinatie este portul sursa al pachetului de reply. 

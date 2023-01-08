@@ -1,0 +1,24 @@
+Tema retele de calcutoare
+Stanescu Maria-Raluca
+
+
+1.Care este adresa de IP ceruta de clientul DHCP?
+R:Folosim Display filter ca sa izolam pachetele de tip dhcp.Dintre toate pachetele, 2 sunt de tip request.
+Daca ne uitam la detalii, la fiec pachet, avem Requested IP Address , care este 192.168.20.11. 
+
+2.Care este adresa de IPv6 a serverului de NTP?
+R:Izolam NTP cu ipv6 cu filtrul ntp && ipv6 si pt server avem adresa pt ipv6 :2003:51:6012:110::dcf7:123.
+
+3.Care este numele serverului autoritar pentru domeniul care este cautat?
+R:Filtram rezultatele pentru a obtine toate queries pentru care cererea a fost valida cu filtrul dns.flags.response == 1.
+In detalii avem Authoritative nameservers , unde avem Name Server:ns1.hans.hosteurope.de.
+
+4.Care este portul pentru protocolul CDP al host-ului CCNP-LAB-S2?
+R:Putem filtra pachetele de care avem nevoie in functie de ID ul device-ului de care avem nevoie cu filtrul cdp.deviceid contains CCNP-LAB-S2.
+Pentru feicre pachet este afisat si Port ID : GigabitEthernet0/2.
+
+5.Ce versiune de IOS ruleaza pe host-ul CCNP-LAB-S2?
+R:Folosind acelasi filtru ca la ex. 4, gasim in detalii campul Software Version pentru IOS , care este 12.1(22)EA14.
+
+6.Cand a fost config-ul de NVRAM actualizat ultima data?
+R:Sortam folosind string , dupa nvram + packet bytes si primul rezultat e in pachetul 3770, in Data , unde gasim last update:21:02:36 03/03/2017.
