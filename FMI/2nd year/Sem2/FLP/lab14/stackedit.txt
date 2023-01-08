@@ -1,0 +1,171 @@
+# Saptamana 14 FLP 
+## Exercitii recapitulative - Deductie naturala, Algoritm de unificare, Rezolutie SLD 
+
+**Structura examenului**
+- 2h, fizic, in laboratoare / amfiteatre;
+- aveti voie cu materiale ajutatoare de la curs / seminar / laborator, dar fara internet;
+- 1p din oficiu, si se trece de la o nota > 4.99
+- este format din doua parti:
+	+ parte teoretica - 4p unde vor fi 3 probleme din lista urmatoare:
+		- unificare
+		- deductie naturala
+		- rezolutie SLD + arbori de rezolutie si de executie
+		- puncte fixe 
+		- pasi in semantica operationala 
+		- substitutii si $\beta$-reductii in $\lambda$-calcul 
+	+ parte practica - 5p 
+		- o problema de Prolog - 2p 
+		- o problema de limbaj de programare - 3p (se da sintaxa unui limbaj de programare, se va verifica daca un sir de caractere primit respecta sintaxa *verificare sintactica*; si apoi se va interpreta respectivul sir de caractere - *semantica*) 
+
+### Exercitii - Deductia Naturala
+
+**Exercitiul 1** Sa se demonstreze ca urmatorul secvent este valid 
+$$p \land q \to \neg u, p \to u, p, q \vdash \neg r$$
+
+Demonstrez ca formula logica din dreapta relatiei $\vdash$ se poate obtine din
+- ipotezele de deductie din stanga relatiei $\vdash$;
+- regulile de inferenta din sistemul deductiei naturale pentru logica propozitionala. 
+
+(1) $p \land q \to \neg u$	 [ipoteza]
+(2) $p \to u$						[ipoteza]
+(3) $p$ [ipoteza]
+(4) $q$ [ipoteza]
+(5) $u$ [$\to e(3, 2)$]
+(6) $p \land q$ [$\land i(3, 4)$]
+(7) $\neg u$ [$\to e(6, 1)$]
+(8) $\bot$ [$\neg e$(5, 7)]
+(9) $\neg r$ [$\bot e(8)$]
+
+**Exercitiul 2** Sa se demonstreze ca urmatorul secvent este valid:
+$$\neg q, p \lor q, s \to \neg p, s \vdash \neg r$$
+
+(1) $\neg q$ [ipoteza]
+(2) $p \lor q$ [ipoteza]
+(3) $s \to \neg p$ [ipoteza]
+(4) $s$ [ipoteza]
+(5) $\neg p$ [$\to e(4, 3)$]
+$\quad$ -------------------------
+(6) | $p$ [asumptie]
+(7) | $\bot$ [$\neg e(6, 5)$]
+(8) | $\neg r$ [$\bot e(7)$]
+$\quad$ -------------------------
+$\quad$ -------------------------
+(9) | $q$ [asumptie]
+(10) | $\bot$ [$\neg e(9, 1)$]
+(11) | $\neg r$ [$\bot e(10)$]
+$\quad$ -------------------------
+(12) $\neg r$ [$\lor e(2, 6-8, 9-11)$]
+
+**Exercitiul 3** Sa se demonstreze ca urmatorul secvent este valid:
+$$p, s \to \neg q, \neg p \lor q, s \vdash r$$
+
+(1) $p$ [ipoteza]
+(2) $s \to \neg q$ [ipoteza]
+(3) $\neg p \lor q$ [ipoteza]
+(4) $s$ [ipoteza]
+(5) $\neg q$ [$\to e(4,2)$]
+$\quad$ -------------------------
+(6) | $\neg p$ [asumptie]
+(7) | $\bot$ [$\neg e(1, 6)$]
+(8) | $r$ [$\bot e(7)$]
+$\quad$ -------------------------
+$\quad$ -------------------------
+(9) | $q$ [asumptie]
+(10) | $\bot$ [$\neg e(9, 5)$]
+(11) | $r$ [$\bot e(10)$]
+$\quad$ -------------------------
+(12) $r$ [$\lor e(3, 6-8, 9-11)$]
+
+### Exercitiu - Rezolutia SLD 
+
+Gasiti o SLD-respingere pentru programul de mai jos, cu tinta $\texttt{?- p(X), m(Y, X), p(Y)}$. Indicati, la fiecare pas, regula si substitutiile folosite. 
+
+```prolog
+1. m(e, c).
+2. m(d, b).
+3. f(a, b).
+4. f(a, c).
+5. p(a).
+6. p(d).
+7. p(X) :- f(Y, X), p(Y).
+```
+
+Mereu, cand lucram un exercitiu bazat pe rezolutia SLD, primul pas este sa transpunem cerinta in formule logice. 
+
+Facts se transpun in formule atomice (termeni din FOL)
+Regulile de inferenta din Prolog se transpun astfel:
+
+```prolog
+P :- Q1, Q2, ..., Qn.
+```
+
+$$Q_1 \land Q_2 \land ... \land Q_n \to P \\
+\equiv \neg(Q_1 \land Q_2 \land ... \land Q_n) \lor P  \\
+\equiv \neg Q_1 \lor \neg Q_2 \lor ... \lor \neg Q_n \lor P$$
+
+(1) $m(e, c)$
+(2) $m(d, b)$
+(3) $f(a, b)$
+(4) $f(a, c)$
+(5) $p(a)$
+(6) $p(d)$
+(7) $\neg f(Y, X) \lor \neg p(Y) \lor p(X)$
+
+$\texttt{?- p(X), m(Y, X), p(Y)}$
+Cand fac rezolutia, tinta devine $\neg p(X) \lor \neg m(Y, X) \lor \neg p(Y)$
+
+$G_0 = \neg p(X) \lor \neg m(Y, X) \lor \neg p(Y)$
+
+$G_1' = \neg m(Y, a) \lor \neg p(Y)$
+$\quad$ aplicand $Rez(G_0, 5)$ cu $\theta(X) = a$ - path blocant 
+
+$G_1'' = \neg m(Y, d) \lor \neg p(Y)$
+$\quad$ aplicand $Rez(G_0, 6)$ cu $\theta(X) = d$ - path blocant 
+--------------------------------------------\
+
+$G_0 = \neg p(X) \lor \neg m(Y, X) \lor \neg p(Y)$
+$G_1 = \neg f(Z, X) \lor \neg p(Z) \lor \neg m(Y, X) \lor \neg p(Y)$
+$\quad$ aplicand $Rez(G_0, 7)$ cu $\theta(X) = X$
+$G_2 = \neg f(a, X) \lor \neg m(Y, X) \lor \neg p(Y)$
+$\quad$ aplicand $Rez(G_1, 5)$ cu $\theta(Z) = a$
+$G_3 = \neg m(Y, b) \lor \neg p(Y)$
+$\quad$ aplicand $Rez(G_2, 3)$ cu $\theta(X) = b$
+$G_4 = \neg m(d, b)$
+$\quad$ aplicand $Rez(G_3, 6)$ cu $\theta(Y) = d$
+$G_5 = \Box$
+$\quad$ aplicand $Rez(G_4, 2)$
+
+Am gasit o SLD-respingere pentru tinta data, deci programul Prolog raspunde cu $\texttt{true}$.
+
+### Exercitiu - Algoritmul de unificare 
+
+Aplicati algoritmul de unificare pentru urmatoorii doi termeni.
+
+$g(y, f(x), b) = g(x, y, b)$
+
+Avem $x, y$ variabile, $b$ constanta ($b / 0$), $f / 1$, $g / 3$
+
+REZOLVA: $x = t$ sau $t = x$
+se muta in multimea solutiei informatia $x = t$ 
+iar in restul multimii de rezolvat, toate aparitiile lui $x$ sunt substituite cu $t$
+Este necesar sa verificam ca, in egalitatea $x= t$ sau $t = x$, $x$ nu apare in $t$. Daca $x$ apare in $t$, atunci suntem pe un caz de $ESEC$.
+
+Un alt caz de esec este la aplicarea descompunerii, cand incercam sa unificam simboluri de functii diferite. $f(x) = g(y)$. $b = f(x)$ - sunt cazuri de ESEC 
+
+|Multimea solutiei	| Multimea de rezolvat     | Operatie aplicata  |
+|-------------------|--------------------------|----------------------|
+| $\emptyset$	    | $g(y, f(x), b) = g(x, y, b)$ | DESCOMPUNE |
+| $\emptyset$		| $y = x$, $f(x) = y$, $b = b$ | SCOATE |
+| $\emptyset$ 		| $y = x$, $f(x) = y$ | REZOLVA
+| $y = f(x)$ 		| $f(x) = x$			| ESEC
+
+Pentru exemplul de mai sus, nu exista un unificator pentru termenii $g(y, f(x), b)$ si $g(x, y, b)$. 
+
+Incercam pentru $f(a, x, g(x)) = f(a, y, y)$
+
+|Multimea solutiei	| Multimea de rezolvat     | Operatie aplicata  |
+|-------------------|--------------------------|----------------------|
+| $\emptyset$		| $f(a, x, g(x)) = f(a, y, y)$ | DESCOMPUNE |
+| $\emptyset$		| $a = a$, $x = y$, $g(x) = y$ | SCOATE |
+| $\emptyset$ 		| $x = y$, $g(x) = y$		| REZOLVA
+| $x = y$			| $g(y) = y$				| ESEC

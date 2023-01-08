@@ -1,0 +1,79 @@
+substitutia repr o functie paritala din variabile in multimea termenilor
+
+daca avem t1 si t2 termeni
+spunem ca termenii t1 si t2 unifica
+daca exista o subvstitutie theta ai theta(t1) = theta(t2)
+
+alg de unificare
+- x variabila; t termen
+operatie		multimea solutiei		lista de rezolvat
+				S				R
+=======================================================================================================
+initial 		multimea vida			t1=t1', t2=t2', ..., tn=tn'
+
+SCOATE				S			R', t = t
+				S			R'
+DESCOMPUNE 			S			R', f(t1, t2, ..., tn) = f(t1', t2', ..., tn')
+				S			R', t1 = t1', t2=t2', ..., tn=tn'
+REZOLVA				S			R', x = t sau t = x ar x nu este var in t
+				x=t, S[t/x]		R'[t/x]
+FINAL				S			multimea vida
+=======================================================================================================
+
+alg obtine ESEC daca:
+- ajung sa fac o unificare f(t1, t2, ..., tn) = g(t1', t2', ..., tk')
+	am simboluri de functie diferite
+	constantele sunt simboluri de functie de aritate 0
+- am o egalitate x = t sau t = x unde x este variabila in t
+
+Ex:
+x, y, z, u, v simboluri pt variabile
+a, b, c constante
+h, g, (_)^(-1) functii de aritate 1
+f, +, * functii de aritate 2
+p functie de aritate 3
+
+========================================================================
+1. sa se gaseasca unificator pt p(a, x, h(g(y)) si p(z, h(z), h(u)).
+solutie:
+lista solutiei				lista de rez				operatia aplicata	
+multimea vida				p(a, x, h(g(y)) = p(z, h(z), h(u))	descompune
+multimea vida				a = z, x = h(z), h(g(y)) = h(u) 	descompune
+vida					a = z, x = h(z), g(y) = u,		rezolva
+z = a					x = h(a), g(y) = u			rezolva
+z = a, x = h(a)				g(y) = u				rezolva
+z = a, x = h(a), u = g(y)		vida					final
+- unificatorul este {a/z, h(a)/x, g(y)/u}
+
+========================================================================
+2. f(h(a), g(x)) = f(y,y)
+solutie
+lista solutiei				lista de rez				operatia
+vida					f(h(a), g(x)) = f(y,y)			descompune
+vida					h(a) = y, g(x) = y			rezolva
+y = h(a), 				g(x) = h(a)				esec
+raspuns: nu exista un unificator pt cei doi termeni
+2 ** 5 = 30 + 2 -> false, incearca sa unifice ** cu +
+
+========================================================================
+3. p(a, x, g(x)) = p(a, y, y)
+lista solutie				lista de rez				operatia
+multimea vida				p(a, x, g(x)) = p(a, y, y)		descompune
+vida					a = a, x = y, g(x) = y			scoate
+vida					x = y, g(x) = y				rezolva
+x = y					g(y) = y				esec
+- nu exista unificator pt cei doi termeni
+
+========================================================================
+4. x + (y * y) = (y * y) + z
++(x, *(y,y)) = +(*(y,y), z)
+lista solutiei				lista de rezolvat			operatia	
+vida					x + (y * y) = (y * y) + z		descompune
+vida					x = (y*y), (y*y) = z			rezolva
+x = y*y					y*y = z					rezolva
+x = y*y, z = y*y			vida					final
+exista un unificator, {y*y/x, y*y/z}
+x/y inseamna x substituie pe y
+
+*** tema
+(x*y)*z = u*u^(-1)

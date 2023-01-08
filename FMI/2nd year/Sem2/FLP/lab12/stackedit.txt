@@ -1,0 +1,205 @@
+# $\lambda$-calcul
+
+- sistem formal pentru logica matematica;
+- a fost dezvoltat de Church intre 1929 - 1935;
+- in 1935 a fost demonstrat ca orice functie calculabila poate fi calculata in $\lambda$-calcul;
+- in 1936 a fost demonstrat ca sistemul $\lambda$-calcul este echivalent cu masinile Turing. 
+
+## Sintaxa 
+
+$$t = x \ | \ t \ t \ | \ \lambda x.t$$
+
+Fie $Var = \{ x, y, ,z ... \}$ o multime infinita de variabile, atunci multimea  $\Lambda T$ a $\lambda$-termenilor se defineste inductiv astfel: 
+
+[Variabila] $Var \subseteq \Lambda T$
+[Aplicare] daca $t_1, t_2 \in \Lambda T$, atunci $(t_1 t_2) \in \Lambda T$
+[Abstractizare] daca $x \in Var$ si $t \in \Lambda T$, atunci $(\lambda x. t) \in \Lambda T$
+
+Conventii de scriere
+- renuntam, in scrierea $\lambda$-termenilor, la parantezele exterioare. Scriem $xy$ in loc de $(x y)$, la fel $\lambda x.xy$ in loc de $(\lambda x.(x y))$;
+- aplicarea este asociativa la stanga: $t_1 t_2 t_3$ este $(t_1 t_2) t_3$;
+- corpul abstractizarii se extinde la dreapta: $\lambda x.t_1 t_2$ inseamna $\lambda x.(t_1 t_2)$;
+- notam $\lambda xyz.t$ in loc de $\lambda x.\lambda y. \lambda z. t$ 
+
+## Variabile libere si legate 
+
+Pentru un $\lambda$-termen $\lambda x.t$ spunem ca:
+- aparitiile lui $x$ in $t$ sunt legate. ($\lambda x.zx$ - variabila $x$ este legata, iar $z$ este libera)
+- $\lambda x$ se numeste legatura (*binder*), iar $t$ este domeniul legarii;
+- o aparitie a unei variabile se numeste libera daca apare intr-o pozitie in care nu este legata. 
+
+$\lambda x.zy$ - acest termen nu are variabile legate, ci doar variabile libere 
+$\lambda xy.xyzt$ - $x$ si $y$ sunt variabile legate, iar $z$ si $t$ sunt libere 
+$\lambda sz. ssz$ - toate variabilele sunt legate
+
+Un termen care are toate variabilele legate se numeste **termen inchis**. 
+
+Multimea variabilelor libere pentru un termen se noteaza cu $FV(t)$ si este definita astfel:
+
+[Variabila] $FV(x) = \{ x \}$
+[Aplicare] $FV(t_1 t_2) = FV(t_1) \cup FV(t_2)$
+[Abstractizare] $FV(\lambda x. t) = FV(t) - \{ x \}$
+
+### Exercitiu 
+
+Calculati multimea variabilelor libere pentru urmatorii $\lambda$-termeni:
+
+*1.a.* $\lambda x.xy$
+$FV(\lambda x. xy) = FV(xy) - \{ x \} = (FV(x) \cup FV(y)) - \{ x \} = \{ x, y \} - \{x\} = \{ y \}$
+
+*1.b.* $x \lambda x.xy$
+$FV(x \lambda x.xy) = FV(x) \cup FV(\lambda x.xy) = \{ x \} \cup \{ y \} = \{ x, y \}$
+
+*1.c.* $x (\lambda xy.xyz) (\lambda v.yv)$
+$FV(x (\lambda xy.xyz) (\lambda v.yv)) = FV(x) \cup FV(\lambda xy.xyz) \cup FV(\lambda v.yv)$
+
+$FV(x) = \{x\}$
+$FV(\lambda xy. xyz) = FV(\lambda x.\lambda y.xyz) = FV(\lambda y.xyz) - \{ x \} = (FV(xyz) - \{ y\}) - \{x\} = (\{x, y, z\} - \{ y \}) - \{ x \} = \{ z \}$
+$FV(\lambda v.yv) = \{ y \}$
+
+$FV(x (\lambda xy.xyz) (\lambda v.yv)) = \{ x, y, z \}$
+
+*1.d.* $\lambda t.((\lambda xyz.yzx)t)$ - termen inchis 
+
+$FV(\lambda t.((\lambda xyz.yzx)t)) = FV((\lambda xyz.yzx)t) - \{t\} = (FV(\lambda xyz.yzx) \cup FV(t)) - \{t\} = (\emptyset \cup \{t \}) - \{ t\} = \emptyset$
+
+$FV(\lambda xyz.yzx) = FV(\lambda x.\lambda y.\lambda z.yzx) = FV(\lambda y.\lambda z.yzx) - \{x\} = (FV(\lambda z.yzx) - \{ y \}) - \{ x \} = ((FV(yzx) - \{ z\}) - \{ y \}) - \{ x \}$
+$FV(yzx) = FV(y) \cup FV(z) \cup FV(x) = \{ y \} \cup \{ z \} \cup \{ x \} = \{ x, y, z \}$
+
+rezulta ca $FV(\lambda xyz.yzx) = \emptyset$
+
+## Substitutii in $\lambda$-calcul
+
+Fie $t$ un $\lambda$-termen si $x \in Var$. Pentru un $\lambda$-termen $u$ vom nota prin $[u / x] t$ rezultatul inlocuirii tuturor aparitiilor libere ale lui $x$ cu $u$ in $t$. 
+
+[Variabila] $[u / x] x = u$
+[Variabila] $[u / x] y = y$
+[Aplicare] $[u / x] t_1 t_2 = ([u / x] t_1) ([u / x] t_2)$
+[Abstractizare] $[u / x] \lambda y.t = \lambda y. [u /x] t$ unde 
+- $x \neq y$
+- $y \not \in FV(u)$
+
+### Exercitiu 
+
+*2.a.* $[y / x] \lambda z.x = \lambda z. [y / x] x = \lambda z. y$
+*2.b.* $[y / x] \lambda y.x$
+- $x \neq y$;
+- nu se respecta $y \not \in FV(y) = \{ y \}$;
+- rezulta ca nu pot efectua substitutia.
+
+*2.c.* $[\lambda z.z / x](\lambda x.yx)$
+- incalc prima conditie, in care variabila pe care o inlocuiesc trebuie sa fie diferita de binder;
+- rezulta ca nu pot efectua substitutia.
+
+*2.d.* $[\lambda z.z / x](\lambda y.yx) = \lambda y. [\lambda z.z/x]yx = \lambda y. ([\lambda z.z/x] y) ([\lambda z.z / x] x) = \lambda y.y (\lambda z.z)$
+
+## $\alpha$-conversia ($\alpha$-echivalenta)
+
+$\alpha$-conversia $=_\alpha$ este o relatie binara pe multimea $\lambda$-termenilor ($=_\alpha \subseteq \Lambda T^2$) care satisface urmatoarele proprietati:
+[Reflexivitate] $t =_\alpha t$
+[Simetrie] $t_1 =_\alpha t_2$ atunci $t_2 =_\alpha t_1$
+[Tranzitivitate] $t_1 =_\alpha t_2$ si $t_2 =_\alpha t_3$ atunci $t_1 =_\alpha t_3$
+[Redenumire] $\lambda x.t =_\alpha \lambda y. [y / x]t$ daca $y \not \in FV(t)$.
+[Compatibilitate] $t_1 =_\alpha t_2$ atunci $tt_1 =_\alpha tt_2$, $t_1 t =_\alpha t_2 t$ si $\lambda x.t_1 =_\alpha \lambda x.t_2$
+[Compatibilitate cu substitutia] $t_1 =_\alpha t_2$ si $u_1 =_\alpha u_2$, atunci $[u_1 / x] t_1 =_\alpha [u_2 / x] t_2$
+
+Exemplu de redenumire $\lambda xyz.tyxzp =_\alpha \lambda xsz.tsxzp$
+
+### Exercitiu
+
+Verificati care dintre $\alpha$-coversiile urmatoare sunt adevarate.
+
+*3.a.* $\lambda x.x =_\alpha \lambda y.y$ este o $\alpha$-conversie valida, prin Redenumirea lui $x$ in $y$
+*3.b.* $\lambda x.y =_\alpha \lambda y.x$ nu este o $\alpha$-conversie valida, pentru ca $y \in FV(y) = \{ y \}$
+*3.c.* $\lambda x.xy =_\alpha \lambda x.xz$ nu este o $\alpha$-conversie valida, pentru ca redenumirea se face doar pe binderi. Cei doi termeni se pot obtine reciproc prin substitutie, dar nu exista o $\alpha$-conversie intre cei doi. 
+*3.d.* $\lambda x.xy =_\alpha \lambda y.yy$ nu este o $\alpha$-conversie valida, pentru ca $y \in FV(xy) = \{ x, y \}$
+*3.e.* $x \lambda x.xy =_\alpha x \lambda z.zy$ - este o $\alpha$-conversie valida
+
+Avem ca $x =_\alpha x$, daca demonstram ca $\lambda x.xy =_\alpha \lambda z.zy$, atunci tine $x \lambda x.xy =_\alpha x \lambda z.zy$
+
+$\lambda x.xy =_\alpha \lambda z.zy$ este o $\alpha$-conversie valida.
+
+*3.f.* $x \lambda x.xy =_\alpha y \lambda x.xy$ nu este o $\alpha$-conversie valida, pentru ca $x \not =_\alpha y$
+
+## $\beta$-reductia
+
+$\beta$-reductia este o relatie definita pe multimea $\Lambda T$, $\to_\beta \subseteq \Lambda T^2$
+[Aplicare] $(\lambda x.t) u \to_\beta [u/x]t$
+[Compatibilitate] $t_1 \to_\beta t_2$ atunci $tt_1 \to_\beta tt_2$, $t_1 t \to_\beta t_2 t$ si $\lambda x.t_1 \to_\beta \lambda x.t_2$
+
+$\beta$-reductia unui $\lambda$-termen nu este un procedeu care se poate face doar intr-un singur mod, dar mereu voi ajunge la acelasi rezultat, modulo $\alpha$-conversie. 
+
+$t \to_\beta^* t_1$
+$t \to_\beta^* t_2$
+$t \to_\beta^* t_3$
+
+Cand nu mai pot face rescrieri, inseamna ca am ajuns intr-o $\beta$-forma normala. Forma normala este unica, modulo $\alpha$-conversie. 
+
+$t_1 =_\alpha t_2 =_\alpha t_3$
+
+Sistemul de rescriere prin $\beta$-reductie este un sistem confluent. 
+
+$t \to_\beta^* \lambda z.z$
+$t \to_\beta^* \lambda x.x$
+
+### Exercitiu 
+
+Sa se aplice $\beta$-reductii asupra $\lambda$-termenului $(\lambda x.(\lambda y.yx)z)v$
+
+$(\lambda x.(\lambda y.yx)z)v \to_\beta [v/x]((\lambda y.yx)z) =_\alpha (\lambda y.yv) z \to_\beta [z / y] (yv) =_\alpha zv$
+
+$(\lambda x.(\lambda y.yx)z)v \to_\beta (\lambda x.([z / y](yx)))v =_\alpha (\lambda x.zx) v \to_\beta [v/x](zx) =_\alpha zv$
+
+Am obtinut ca $zv$ este $\beta$-forma normala.
+
+# Exercitii de laborator
+
+Fie urmatoarele tipuri de date:
+
+Tipul pentru variabilele din $\lambda$-calcul.
+```haskell
+type Variable = Char 
+```
+
+Tipul algebric pentru termenii din $\lambda$-calcul:
+```haskell
+data Term = V Variable
+	| App Term Term 
+	| Lam Variable Term 
+	deriving (Show)
+```
+
+1. Definiti urmatoarele $\lambda$-expresii in tipul de date $\texttt{Term}$:
+	$\lambda x.xy$, $\lambda xyz.zxt$, $\lambda sz.sssz$, $x (\lambda t.tz) (\lambda xy.yzt)$
+
+```haskell
+lambda1 :: Term 
+lambda1 = Lam 'x' (App (V 'x') (V 'y'))
+
+lambda2 :: Term
+lambda2 = undefined 
+
+lambda3 :: Term
+lambda3 = undefined
+
+lambda4 :: Term
+lambda4 = undefined 
+```
+
+2. Definiti o functie $\texttt{freeVars :: Term -> [Variable]}$ care calculeaza multimea variabilelor libere dintr-un $\lambda$-termen. 
+
+```haskell
+freeVars :: Term -> [Variable]
+freeVars (V x) = [x] 
+```
+
+3. Definiti o functie pentru a calcula substitutia
+
+```haskell
+-- subst u       x           t       tresult
+-- tresult = [u / x] t 
+subst :: Term -> Variable -> Term -> Term
+subst u x (V y)
+    | x == y = u 
+    | otherwise = V y 
+```

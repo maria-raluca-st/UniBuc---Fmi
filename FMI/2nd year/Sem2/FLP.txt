@@ -1,0 +1,320 @@
+-----------------------------Lab 1---------------
+1.Distanta dintre 2 puncte :
+?- distance((0,0), (3,4), X).
+?- distance((-2.5,1), (3.5,-4), X).
+2.Aritmetica
+-- (is)
+?- 3+5 is 8.
+-- (=:=) compara 2 expresii artimetice.
+?- 2 ** 3 =:= 3 + 5.
+-- (=) cauta un unificator 
+
+
+------------------------Lab 2------------------
+1. Fibonacci ( un predicat pt a calc al n lea nr fibonacci)
+% N1 is N - 1,
+% fib(N1)
+
+%fib / 2
+% fib( +I, -R).
+fib(0, 1).
+fib(1, 1).
+fib(N, R) :-
+N1 is N - 1,
+N2 is N - 2,
+fib(N1, R1),
+fib(N2, R2),
+R is R1 + R2.
+
+% apel:  fib(2, X).
+
+2.Afisarea unui patrat de caractere
+
+% square / 2
+% square(+Dim, +Ch).
+
+% _______________________
+%square(0, _) :- nl.
+%square(N, Ch) :-
+% squareLine(N, Ch),
+% N1 is N - 1,
+% square(N1, Ch).
+% __________________
+
+
+% VARIANTA 1
+
+%squareLine(0, _) :- nl.
+%squareLine(N, Ch) :-
+% write(Ch),
+% N1 is N - 1,
+% squareLine(N1, Ch).
+%
+%
+%squareAux(N, N, _) :- nl.
+%squareAux(N, I, Ch) :-
+% squareLine(N, Ch),
+% I1 is I + 1,
+% squareAux(N, I1, Ch).
+%
+%square(N, Ch) :- squareAux(N, 0, Ch).
+
+% ca sa specific cazul cand 2 argumente sunt egale,
+% fac o definitie noua unde au acelasi nume
+
+%final de matrice:
+squareAux(N, N, N, Ch) :-
+write(Ch),
+nl.
+
+
+%final de linie
+
+squareAux(N, I, N, Ch) :-
+write(Ch),
+nl,
+I1 is I + 1,
+squareAux(N, I1, 1, Ch).
+
+
+squareAux(N, I, J, Ch) :-
+write(Ch),
+J1 is J + 1,
+squareAux(N, I, J1, Ch).
+
+
+%facem si un square cu un sg param care apeleaza aux(0,0)
+
+3.a.un predicat all a/1 care primeste ca argument o lista  ̧si care
+verifica daca argumentul sau este format doar din a-uri.
+
+all_a([a]).
+all_a([a | T]) :- all_a(T).
+
+3.b.predicat trans a b/2 care ”traduce” o lista de a-uri intr-o
+lista de b-uri.
+
+
+trans_a_b([a], [b]).
+trans_a_b([a | T1], [b | T2]) :- trans_a_b(T1, T2).
+
+4.a. scalarMult/3
+
+scalarMult(_, [], []).
+scalarMult(Scalar, [HInput | TInput], [ HOutput | TOutput]) :-
+HOutput is Scalar * HInput,
+scalarMult(Scalar, TInput, TOutput).
+
+4.b. dot/3
+
+dot([], [], 0).
+dot([H1 | T1], [H2 | T2], R) :-
+dot(T1, T2, RT),
+R is RT + H1 * H2.
+
+5. max/2
+
+max([], 0).
+max([H], H).
+
+max([H | T], Max) :-
+max(T, TailMax),
+H > TailMax,
+Max = H.
+
+max([H | T], Max) :-
+max(T, TailMax),
+H =< TailMax,
+Max = TailMax.
+
+6. palindrome/1
+palindrome(X) :- reverse(X, X).
+
+7. remove_duplicates/2
+
+remove_duplicates([], []).
+remove_duplicates([H | T], LR) :-
+member(H, T), % H apare in tail
+remove_duplicates(T, LR).
+
+remove_duplicates([H | T], [H | TR]) :-
+not(member(H, T)),
+remove_duplicates(T, TR).
+
+8. replace/4
+
+replace([], _, _, []).
+replace([X | T], X, Y, [Y | LR]) :-
+replace(T, X, Y, LR).
+
+replace([Z | T], X, Y, [Z | LR]) :-
+replace(T, X, Y, LR).
+ 
+
+----------------+ continuare liste-----------
+1.un predicat care verifica ca un termen este lista.
+is_list([]).
+is_list([_|_]).
+
+2.predicate care verifica daca un termen este primul element,
+ultimul element sau coada unei liste.
+head([X|_],X).
+last([X],X).
+last([_|T],Y):- last(T,Y).
+tail([],[]).
+tail([_|T],T).
+
+3.Definiti un predicat care verifica daca un termen apartine unei liste.
+member(H, [H|_]).
+member(H, [_|T]) :- member(H,T).
+
+4.un predicat append/3 care verifica daca o lista se obtine prin
+concatenarea altor doua liste.
+append([],L,L).
+append([X|T],L, [X|R]) :- append(T,L,R).
+
+5.un predicat elim/3 care verifica daca o lista se obtine din alta
+prin eliminarea unui element.
+elim(X, [X|T], T).
+elim(X, [H|T], [H|L]) :- elim(X,T,L).
+
+6.un predicat care perm/2 care verifica daca doua liste sunt
+permutari.
+perm([],[]).
+perm([X|T],L) :- elim(X,L,R), perm(R,T)
+
+-------------------------------Lab 3-----------------
+
+1. crosswd/6
+
+crosswd(V1, V2, V3, H1, H2, H3) :-
+    word(V1, _, L1, _, L4, _, L7, _),
+    word(V2, _, L2, _, L5, _, L8, _),
+    word(V3, _, L3, _, L6, _, L9, _),
+    word(H1, _, L1, _, L2, _, L3, _),
+    word(H2, _, L4, _, L5, _, L6, _),
+    word(H3, _, L7, _, L8, _, L9, _).
+
+% crosswd(A1, B2, C3, D, E, F).
+
+2. year/2
+
+year(An, Person) :-
+    born(Person, date(_, _, An)).
+
+2.b. before/2
+
+lte(X, Y, X) :-
+    X < Y.
+lte(X, Y, Y) :-
+    Y < X.
+
+before(date(D1, M1, Y1), date(D2, M2, Y2)) :-
+    Y1 < Y2.
+
+before(date(D1, M1, Y1), date(D2, M2, Y2)) :-
+    Y1 = Y2,
+    M1 < M2.
+
+before(date(D1, M1, Y1), date(D2, M2, Y2)) :-
+    Y1 = Y2,
+    M1 = M2,
+    D1 < D2.
+
+2.c. older/2
+
+older(P1, P2) :- 
+    born(P1, D1),
+    born(P2, D2),
+    before(D1, D2).
+
+3. path/2
+
+% path(X, Y) :-
+%     connected(X, Y).
+% path(X, Y) :-
+%     connected(X, Z),
+%     path(Z, Y).
+
+%  nu stiu daca trb si asta neaparat
+% path(X, Y) :-
+%     connected(Z, Y),
+%     path(X, Z).
+
+4.a.  succesor/2
+
+successor(Ls, [x|Ls]).
+
+4.b. plus/3
+
+
+% plus(N1, N2, Rez) :-
+%     plus(N1, N2, 0, Rez).
+
+% plus([], N2, I, Rez) :-
+%     plus2(N2, I, Rez).
+% plus(N1, N2, I, Rez) :-
+%     pred(N1, N1Pre),
+%     Inext is I+1,
+%     plus(N1Pre, N2, Inext, Rez).
+
+% plus2(Rez, 0, Rez).
+% plus2(N1, I, Rez) :-
+%     Iprev is I-1,
+%     successor(N1, N1Succ),
+%     plus2(N1Succ, Iprev, Rez).
+
+plus([], L2, L2).
+plus([H1 | L1], L2, [H1 | L3]) :-
+plus(L1, L2, L3).
+
+% v1
+% plus([], Rez, Rez).
+% plus(N1, N2, Rez) :-
+%     successor(N2, SN2),
+%     pred(N1, PN1),
+%     plus(PN1, SN2, Rez).
+
+4.c. times/3
+
+
+%  nu merge inca
+% times(N1, N2, Rez) :-
+%     times(N1, N2, [], Rez).
+
+% times([], _, Rez, Rez).
+% times(N1, N2, Aux, Rez) :-
+%     pred(N1, Npred),
+%     plus(N2, Aux, Aux),
+%     times(Npred, N2, Aux, Rez).
+
+times([], _, []).
+times([H|T], L2, LR) :-
+    times(T, L2, LTail),
+    plus(L2, LTail, LR).
+
+5. element_at/3
+
+element_at(Ls, N, Out) :-   
+    element_at(Ls, 1, N, Out).
+
+element_at([H|T], I, I, H).
+element_at([H|T], I, N, Out) :-
+    Inext is I+1,
+    element_at(T, Inext, N, Out).
+
+6. mutant/1
+
+mutant(X) :-
+    animal(Y),
+    animal(Z),
+    Y \= Z,
+    name(Y, NameY),
+    name(Z, NameZ),
+    append(Y1, Comm, NameY),
+    append(Comm, Z2, NameZ),
+    Comm \= [],
+    append(NameY, Z2, NewName),
+    name(X, NewName).
+
+

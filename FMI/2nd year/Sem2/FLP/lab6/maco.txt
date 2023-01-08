@@ -1,0 +1,28 @@
+rec logica propo
+
+-semantica
+-sintaxa
+
+semantica - adevar, tautologie
+sintaxa - teorema, o prop poate fi demonstrata
+
+|= pentru semantica
+|- pentru sintaxa
+
+|= (fi) -> inseamna (fi) tautologie
+|- (fi) -> inseamna (fi) demonstrabila sau (fi) teorema
+
+in logica prop, pentru a verifica daca o formula (fi) este tautologie, este suf sa ii constr tab de adevar
+
+ex1: aratati ca urm formula este tautologie
+(v1 \/ v2 -> v3) <-> (v1 -> v3) /\ (v2 -> v3)
+	A        <->  		B
+
+cate var avem? 3
+cate linii am in tabelul de adevar? 2^3 = 8
+
+v1 | v2 | v3 | v1 \/ v2 | A \ v1 -> v3 | v2 > v3 | B | A <-> B
+
+tautologie
+
+	`
