@@ -1,0 +1,30 @@
+Normalizare
+x_train=np.array(x_train)
+x_train-=np.mean(x_train)
+x_train/=np.std(x_train)
+
+
+
+def anagrame(s1,s2, lengram=5):
+    sbtr1=""
+    sbtr2=""
+    contor=0
+    i=0
+    for i in range(len(s1)-lengram):
+        sbtr1=s1[i:(i+lengram)]
+        for j in range(len(s2)-lengram):
+            sbtr2=s2[j:(j+lengram)]
+            if(sbtr1==sbtr2):
+                contor+=1
+    return contor
+
+Matrice kernel:
+np.dot(train_data , np.trnaspose(train_data))
+
+Normalizare poze:
+(train_data - np.mean(train_data))/np.std(train_data)
+
+StandardScaler().fit(train_data)
+
+matrice kernel dintre 2 multimi de exemple :
+return np.dot(X, np.transpose(Y))

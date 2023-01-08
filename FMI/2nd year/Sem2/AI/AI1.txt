@@ -1,0 +1,44 @@
+class Elev:
+    #atribute de clasa (statice)
+    id = 0
+    
+    def __init__(self,nume = None, sanatate=None, inteligenta=None, oboseala=None , buna_dispozitie=None,lista_activitati=None):
+        #atribute de instanta
+        if nume is None :
+            self.nume = "Necunoscut_"+ str (self.__class__.id)
+            self.__class__.id+=1
+        else:
+            self.nume = nume
+        self.sanatate = 90 if sanatate is None else sanatate
+        self.inteligenta = 20 if inteligenta is None else inteligenta
+        self.oboseala = 0 if oboseala is None else oboseala
+        self.buna_dispozitie = 100 if buna_dispozitie is None else buna_dispozitie
+        
+        
+        
+    
+        
+class Activitate:
+    
+    def __init__(self , nume, factor_sanatate,factor_inteligenta,factor_oboseala,factor_dispozitie,durata):
+        self.nume = nume
+        self.factor_sanatate = factor_sanatate
+        self.factor_inteligenta = factor_inteligenta
+        self.factor_oboseala = factor_oboseala
+        self.factor_dispozitie = factor_dispozitie
+        self.durata = durata
+        
+    
+if __name__ == "__main__" :
+    lista = []
+    
+    f = open("in.txt" , "r")
+    lines = f.readlines()
+    
+    for l in lines
+       print(l)    
+    
+        
+        
+        
+
